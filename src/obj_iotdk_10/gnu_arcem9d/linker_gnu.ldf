@@ -1,0 +1,163 @@
+MEMORY
+{
+ REGION_ICCM : ORIGIN = 0x20000000, LENGTH = 0x40000
+ REGION_DCCM : ORIGIN = 0x80000000, LENGTH = 0x20000
+ REGION_XCCM : ORIGIN = 0xc0000000, LENGTH = 32768
+ REGION_YCCM : ORIGIN = 0xe0000000, LENGTH = 32768
+ REGION_EXT_ROM : ORIGIN = 0x0, LENGTH = 0x40000
+ REGION_EXT_RAM : ORIGIN = 0x30000000, LENGTH = 0x20000
+}
+ENTRY(_start)
+SECTIONS
+{
+ .init :
+ {
+  . = . + 0x0;
+  _f_init = .;
+  KEEP (*(.init_vector .init_vector.*))
+  KEEP (*(.init_bootstrap .init_bootstrap.*))
+  _e_init = .;
+ } > REGION_ICCM
+ .vector : ALIGN(1024)
+ {
+  _f_vector = .;
+  *(.vector .vector.*)
+  _e_vector = .;
+ } > REGION_ICCM
+ /DISCARD/ : {
+  *libmli*.a:*.o(.arcextmap*)
+ }
+ .mli_rom : ALIGN(8) {
+  _f_mli_rom = .;
+    *libmli*.a:*.o(.mli_lib*)
+  *libmli*.a:*.o(.rodata .rodata.*)
+  _e_mli_rom = .;
+ } > REGION_ICCM AT > REGION_ICCM
+ _load_addr_mli_rom = LOADADDR(.mli_rom);
+ .mli_data : ALIGN(8) {
+  _f_mli_data = .;
+  *libmli*.a:*.o(.rodata_in_data .rodata_in_data.*)
+  *libmli*.a:*.o(.data .data.*)
+  _e_mli_data = .;
+ } > REGION_DCCM AT > REGION_ICCM
+ _load_addr_mli_data = LOADADDR(.mli_data);
+ .Zdata : ALIGN(8) {
+  _f_Zdata = .;
+  *(.Zdata*)
+  _e_Zdata = .;
+ } > REGION_DCCM AT > REGION_ICCM
+ _load_addr_Zdata = LOADADDR(.Zdata);
+ .mli_model_p2 : ALIGN(8) {
+  _f_mli_model_p2 = .;
+  *(.mli_model_p2 .mli_model_p2.*)
+  _e_mli_model_p2 = .;
+ } > REGION_DCCM AT > REGION_ICCM
+ _load_addr_mli_model_p2 = LOADADDR(.mli_model_p2);
+ .mli_model : ALIGN(8) {
+  _f_mli_model = .;
+  *(.mli_model .mli_model.*)
+  _e_mli_model = .;
+ } > REGION_XCCM AT > REGION_ICCM
+ _load_addr_mli_model = LOADADDR(.mli_model);
+ .mli_bss (NOLOAD) : ALIGN(8) {
+  _f_mli_bss = .;
+  *libmli*.a:*.o(.bss .bss.*)
+  _e_mli_bss = .;
+ } > REGION_DCCM
+ .Xdata (NOLOAD) : ALIGN(8) {
+  _f_Xdata = .;
+  *(.Xdata*)
+  _e_Xdata = .;
+ } > REGION_XCCM
+ .Ydata (NOLOAD) : ALIGN(8) {
+  _f_Ydata = .;
+  *(.Ydata*)
+  _e_Ydata = .;
+ } > REGION_YCCM
+ .x_ccm (NOLOAD) : ALIGN(8)
+ {
+  _f_x_ccm = .;
+  *(.x_ccm .x_cmm.*)
+  _e_x_ccm = .;
+ } > REGION_XCCM
+ .y_ccm (NOLOAD) : ALIGN(8)
+ {
+  _f_y_ccm = .;
+  *(.y_ccm .y_ccm.*)
+  _e_y_ccm = .;
+ } > REGION_YCCM
+ .text : ALIGN(4)
+ {
+  _f_text = .;
+  *(.text .text.* .gnu.linkonce.t.*)
+  _e_text = .;
+ } > REGION_ICCM
+ .rodata : ALIGN(4)
+ {
+  _f_rodata = .;
+  . = ALIGN(4);
+  __CTOR_LIST__ = .;
+  LONG((__CTOR_END__ - __CTOR_LIST__) / 4 - 2)
+  KEEP(*(SORT_BY_NAME(".ctors*")))
+  LONG(0)
+  __CTOR_END__ = .;
+  . = ALIGN(4);
+  __init_array_start = .;
+  KEEP(*(SORT_BY_NAME(".init_array*")))
+  __init_array_end = .;
+  . = ALIGN(4);
+  __DTOR_LIST__ = .;
+  LONG((__DTOR_END__ - __DTOR_LIST__) / 4 - 2)
+  KEEP(*(SORT_BY_NAME(".dtors*")))
+  LONG(0)
+  __DTOR_END__ = .;
+  *(.rodata .rodata.* .gnu.linkonce.r.*)
+  _e_rodata = .;
+ } > REGION_ICCM
+ .data : ALIGN(4)
+ {
+  _f_data = .;
+  *(.data .data.* .gnu.linkonce.d.*)
+  _f_sdata = .;
+  __SDATA_BEGIN__ = .;
+  *(.sdata .sdata.* .gnu.linkonce.s.*)
+  PROVIDE (__sbss_start = .);
+  PROVIDE (___sbss_start = .);
+  _f_sbss = .;
+  *(.dynsbss)
+  *(.sbss .sbss.* .gnu.linkonce.sb.*)
+  *(.scommon)
+  _e_sbss = .;
+  PROVIDE (__sbss_end = .);
+  PROVIDE (___sbss_end = .);
+  _e_sdata = .;
+  _e_data = .;
+ } > REGION_DCCM AT > REGION_ICCM
+ .bss (NOLOAD) : ALIGN(8)
+ {
+  _f_bss = .;
+  *(.dynbss)
+  *(.bss .bss.* .gnu.linkonce.b.*)
+  *(COMMON)
+  _e_bss = .;
+ } > REGION_DCCM
+ .stack (NOLOAD) :
+ {
+  . = ALIGN(4);
+  _f_stack = .;
+  . = . + 2048;
+  _e_stack = .;
+ } > REGION_DCCM
+ .heap (NOLOAD) :
+ {
+  . = ALIGN(4);
+  __start_heap = . ;
+  _f_heap = .;
+  . = . + 8192;
+  _e_heap = .;
+  __end_heap = . ;
+ } > REGION_DCCM
+ _load_addr_text = LOADADDR(.text);
+ _load_addr_rodata = LOADADDR(.rodata);
+ _load_addr_data = LOADADDR(.data);
+}
