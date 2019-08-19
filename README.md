@@ -20,12 +20,14 @@ We get a dataset with three kinds of data, defect, false-alarm, and golden. Fals
 ### Required Hardware
 [DesignWare ARC IoT Development Kit](https://github.com/foss-for-synopsys-dwc-arc-processors/ARC-Development-Systems-Forum/wiki/ARC-Development-Systems-Forum-Wiki-Home#arc-iot-dev-kit-1)
 ![](https://imgur.com/kGNpoki.png=500x)
-| Training Platform     |   |
-| ---------------       |---|
-|CPU|Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz (32 Cores)|
-|GPU|GeForce GTX 1080|
-|RAM| 188GB|
-|OS |Linux Ubuntu 14.04.5|
+
+| Training Platform     | Device                                               |
+| --------------------- | ---------------------------------------------------- |
+| CPU                   | Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz (32 Cores) |
+| GPU                   | GeForce GTX 1080                                     |
+| RAM                   | 188GB                                                |
+| OS                    | Linux Ubuntu 14.04.5                                 |
+
 ### Required Software
 * EMSK Environment 
 	* [embARC OSP branch-embARC MLI](https://github.com/foss-for-synopsys-dwc-arc-processors/embarc_osp/tree/embarc_mli)
