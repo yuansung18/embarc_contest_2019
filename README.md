@@ -57,7 +57,7 @@ APPL_DEFINES = -DUSE_APPL_MEM_CONFIG -DV2DSP_XY -DMODEL_BIT_DEPTH=8
 EMBARC_ROOT = setting your root path of your embARC-osp without " "
 ```
 
-### run-this-application
+### Run This Application
 Run the "make run" command on cmd in directory where your makefile is
 ![](https://imgur.com/ybhg4RR.png)
 
