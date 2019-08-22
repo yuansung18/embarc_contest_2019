@@ -49,6 +49,7 @@ We get a dataset with three kinds of data, defect, false-alarm, and golden. Fals
 ## User Manual
 ### Before Running This Application
 * Dataset
+
 Due to ownership, we could not provide dataset. You should prepare it as a char array by yourselves.
 
 * makefile
